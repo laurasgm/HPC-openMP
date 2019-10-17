@@ -31,9 +31,9 @@ void imprimir_matrices(int TAM){
 
 }
 
-void imprimir_paralelo(int TAM){
+void imprimir_secuencial(int TAM){
     cout << endl
-         << "Multiplicacion por hilos" << endl;
+         << "Multiplicacion secuencial" << endl;
     for (int i = 0; i < TAM; i++) {
         for (int j = 0; j < TAM; j++)
             cout << *(*(r+i)+j)  << " ";
@@ -76,7 +76,7 @@ int main (int argc, char **argv)
       }
   }
 
-  //multiplicacion openMP
+  //multiplicacion 
     for(int i=0; i<TAM; i++){
       for(int j=0; j<TAM; j++){
           *(*(r+i)+j) = 0;
@@ -85,6 +85,6 @@ int main (int argc, char **argv)
           }
       }
     }
-    imprimir_matrices(TAM);
-    imprimir_paralelo(TAM);
+    //imprimir_matrices(TAM);
+    //imprimir_secuencial(TAM);
 }
