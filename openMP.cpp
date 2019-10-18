@@ -6,24 +6,33 @@
 
 using namespace std;
 
+#define NUM_THREADS 4
+
 int **m1;
 int **m2;
 int **r;
 int i,j,k;
-
+double sum;
+void test(int TAM){
+    
+}
 void multiplicacion_openMP(int TAM){
 
-    omp_set_num_threads(4);
-
-    #pragma omp parallel for private(i,j,k)
-    for(int i=0; i<TAM; i++){
-        for(int j=0; j<TAM; j++){
-            *(*(r+i)+j) = 0;
-            for(int k=0; k<TAM; k++){
-                    *(*(r+i)+j) += *(*(m1+i)+k)  * *(*(m2+k)+j) ;
+    #pragma omp sections  
+     {
+        #pragma omp section
+        for(int i=0; i<TAM; i++){
+            for(int j=0; j<TAM; j++){
+                sum = 0; 
+                #pragma omp parallel for reduction(+:sum)
+                for(int k=0; k<TAM; k++){
+                    sum += *(*(m1+i)+k)  * *(*(m2+k)+j) ;
+                }
+                *(*(r+i)+j) += sum;
             }
+        //cout<<endl<<"NUMERO DE HILOS: "<<omp_get_num_threads()<<endl;
         }
-    }
+     }
 }
 
 void imprimir_matrices(int TAM){
@@ -95,16 +104,16 @@ int main (int argc, char **argv)
         }
     }
 
-   double start_time = omp_get_wtime();
+    omp_set_num_threads(NUM_THREADS);
+
+    double start_time = omp_get_wtime();
 
     //multiplicacion openMP
     multiplicacion_openMP(TAM);
 
     double time = omp_get_wtime()-start_time;
-    cout<<endl<<time;
-    int hilos = omp_get_num_threads();
-    cout<<endl<<"NUMERO DE HILOS: "<<hilos<<endl;
-
-    // imprimir_matrices(TAM);
+    cout<<TAM<<","<<time<<endl;
+    
+    //imprimir_matrices(TAM);
     //imprimir_paralelo(TAM);
 }

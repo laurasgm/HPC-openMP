@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
-
+#include "timer.hh"
 
 using namespace std;
 
@@ -75,6 +75,8 @@ int main (int argc, char **argv)
           *(*(m2+i)+j) =rand() % 10 + 1;
       }
   }
+  //este tiempo se toma con la libreria timer.hh
+  ScopedTimer p;
 
   //multiplicacion 
     for(int i=0; i<TAM; i++){
@@ -85,6 +87,8 @@ int main (int argc, char **argv)
           }
       }
     }
+
+    cout<<TAM<<","<<p.elapsed()/1e+6<<endl;
     //imprimir_matrices(TAM);
     //imprimir_secuencial(TAM);
 }
