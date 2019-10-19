@@ -18,21 +18,19 @@ void test(int TAM){
 }
 void multiplicacion_openMP(int TAM){
 
-    #pragma omp sections  
-     {
-        #pragma omp section
-        for(int i=0; i<TAM; i++){
-            for(int j=0; j<TAM; j++){
-                sum = 0; 
-                #pragma omp parallel for reduction(+:sum)
-                for(int k=0; k<TAM; k++){
-                    sum += *(*(m1+i)+k)  * *(*(m2+k)+j) ;
-                }
-                *(*(r+i)+j) += sum;
+    #pragma omp parallel
+    for(int i=0; i<TAM; i++){
+        for(int j=0; j<TAM; j++){
+            sum = 0; 
+            for(int k=0; k<TAM; k++){
+                    #pragma omp master
+                     sum += *(*(m1+i)+k)  * *(*(m2+k)+j) ;
             }
-        //cout<<endl<<"NUMERO DE HILOS: "<<omp_get_num_threads()<<endl;
+            #pragma barrier
+            *(*(r+i)+j) += sum;
         }
-     }
+        //cout<<endl<<"NUMERO DE HILOS: "<<omp_get_num_threads()<<endl;
+    }
 }
 
 void imprimir_matrices(int TAM){
