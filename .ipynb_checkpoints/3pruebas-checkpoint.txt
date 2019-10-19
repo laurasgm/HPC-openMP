@@ -1,0 +1,46 @@
+si le quito el for y solo dejo el parallel la m de 1000 sube a 30 seg
+
+1.
+
+#pragma omp parallel for private(i,j,k,sum) 
+    for(int i=0; i<TAM; i++){
+        for(int j=0; j<TAM; j++){
+            sum = 0; 
+            for(int k=0; k<TAM; k++){
+                     sum += *(*(m1+i)+k)  * *(*(m2+k)+j) ;
+            }
+            *(*(r+i)+j) += sum;
+        }
+        //cout<<endl<<"NUMERO DE HILOS: "<<omp_get_num_threads()<<endl;
+    }
+
+2.
+
+#pragma omp parallel for schedule (static)
+        for(int i=0; i<TAM; i++){
+            for(int j=0; j<TAM; j++){
+                sum = 0; 
+                #pragma omp parallel for reduction(+:sum)
+                for(int k=0; k<TAM; k++){
+                        sum += *(*(m1+i)+k)  * *(*(m2+k)+j) ;
+                }
+                *(*(r+i)+j) += sum;
+            }
+            //cout<<endl<<"NUMERO DE HILOS: "<<omp_get_num_threads()<<endl;
+        }
+
+
+3.
+#pragma omp parallel
+    for(int i=0; i<TAM; i++){
+        for(int j=0; j<TAM; j++){
+            sum = 0; 
+            for(int k=0; k<TAM; k++){
+                    #pragma omp master
+                     sum += *(*(m1+i)+k)  * *(*(m2+k)+j) ;
+            }
+            #pragma barrier
+            *(*(r+i)+j) += sum;
+        }
+        //cout<<endl<<"NUMERO DE HILOS: "<<omp_get_num_threads()<<endl;
+    }
